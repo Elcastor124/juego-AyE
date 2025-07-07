@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png-80372272402d557ec422ca8fd2a74e35.stex"
+path="res://.import/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png-ae0e66921130d3010cc13ed93bda8b52.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"
-dest_files=[ "res://.import/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png-80372272402d557ec422ca8fd2a74e35.stex" ]
+source_file="res://IMAGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"
+dest_files=[ "res://.import/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png-ae0e66921130d3010cc13ed93bda8b52.stex" ]
 
 [params]
 
