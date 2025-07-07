@@ -9,7 +9,7 @@ var real_noise_percentage = 0.0
 
 func _ready():
 	randomize()
-	noise_ratio = randf() * (max_val - min_val) + min_val
+	noise_ratio = randf() * (max_value - min_value) + min_value
 	var img = Image.new()
 	var err = img.load(image_path)
 	if err != OK:
