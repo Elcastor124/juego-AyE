@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/8p42uqeg.png-fbb0a36f27e343662cc461df616cb93b.stex"
+path="res://.import/calabacin.png-d12d82e2b35bd3962e43bc1a27b72f69.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://IMAGES/8p42uqeg.png"
-dest_files=[ "res://.import/8p42uqeg.png-fbb0a36f27e343662cc461df616cb93b.stex" ]
+source_file="res://IMAGES/calabacin.png"
+dest_files=[ "res://.import/calabacin.png-d12d82e2b35bd3962e43bc1a27b72f69.stex" ]
 
 [params]
 
