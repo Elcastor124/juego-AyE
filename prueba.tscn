@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://SCRIPTS/generador de ruido.gd" type="Script" id=1]
+
+[node name="Node2D" type="Node2D"]
+position = Vector2( 496, 293 )
+script = ExtResource( 1 )
+image_path = "res://IMAGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"
