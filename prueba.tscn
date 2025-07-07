@@ -5,4 +5,3 @@
 [node name="Node2D" type="Node2D"]
 position = Vector2( 496, 293 )
 script = ExtResource( 1 )
-image_path = "res://IMAGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"

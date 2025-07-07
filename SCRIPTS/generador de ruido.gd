@@ -12,17 +12,22 @@ func _ready():
 
 	var width = img.get_width()
 	var height = img.get_height()
-	var total_pixels = width * height
+	var total_pixels = 0
 	var noisy_pixels = 0
 
 	img.lock()
 
 	for y in range(height):
 		for x in range(width):
-			if randf() < noise_ratio:
-				var color = Color(1, 1, 1) if randf() < 0.5 else Color(0, 0, 0)
-				img.set_pixel(x, y, color)
-				noisy_pixels += 1
+			var original_color = img.get_pixel(x, y)
+			
+			# Solo afectar a píxeles que no sean completamente transparentes
+			if original_color.a > 0.01:
+				total_pixels += 1
+				if randf() < noise_ratio:
+					var color = Color(1, 1, 1) if randf() < 0.5 else Color(0, 0, 0)
+					img.set_pixel(x, y, color)
+					noisy_pixels += 1
 
 	img.unlock()
 
@@ -33,5 +38,8 @@ func _ready():
 	sprite.texture = tex
 	add_child(sprite)
 
-	var porcentaje = (noisy_pixels * 100.0) / total_pixels
-	print("Porcentaje de píxeles con ruido: %.2f%%" % porcentaje)
+	if total_pixels > 0:
+		var porcentaje = (noisy_pixels * 100.0) / total_pixels
+		print("Porcentaje de píxeles con ruido (solo con color): %.2f%%" % porcentaje)
+	else:
+		print("No se encontraron píxeles con color.")
