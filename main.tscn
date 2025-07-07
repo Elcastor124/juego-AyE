@@ -5,4 +5,3 @@
 [node name="main" type="Node2D"]
 
 [node name="Node2D" parent="." instance=ExtResource( 1 )]
-image_path = "res://IM0.1AGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"
