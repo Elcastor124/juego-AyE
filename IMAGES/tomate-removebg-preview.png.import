@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tomate.png-f1ac36b13916534f13b71ababdee292c.stex"
+path="res://.import/tomate-removebg-preview.png-0dd2cde40d7b6f725999e431fc0b3662.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://IMAGES/tomate.png"
-dest_files=[ "res://.import/tomate.png-f1ac36b13916534f13b71ababdee292c.stex" ]
+source_file="res://IMAGES/tomate-removebg-preview.png"
+dest_files=[ "res://.import/tomate-removebg-preview.png-0dd2cde40d7b6f725999e431fc0b3662.stex" ]
 
 [params]
 
