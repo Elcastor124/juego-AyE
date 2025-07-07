@@ -1,6 +1,6 @@
 extends Node2D
 
-export(String) var image_path = ""
+export(String) var image_path = "res://IMAGES/8p42uqeg.png"
 export(float) var noise_ratio = 0.1  # 10% de ruido
 
 func _ready():
