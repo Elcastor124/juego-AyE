@@ -1,12 +1,15 @@
 extends Node2D
 
 export(String) var image_path = "res://IMAGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"
-export(float) var noise_ratio = 0.1  # 10% de ruido
+export(float) var noise_ratio   # 10% de ruido
+export(float) var min_value
+export(float) var max_value
 
 var real_noise_percentage = 0.0
 
 func _ready():
 	randomize()
+	noise_ratio = randf() * (max_val - min_val) + min_val
 	var img = Image.new()
 	var err = img.load(image_path)
 	if err != OK:
