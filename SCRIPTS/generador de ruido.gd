@@ -47,17 +47,17 @@ func _ready():
 func crear_ui():
 	var label = Label.new()
 	label.text = "¿Cuánto ruido hay en la imagen? (porcentaje)"
-	label.set_position(Vector2(-393, 227))
+	label.set_position(Vector2(-150, -250))
 	add_child(label)
 
 	var input = LineEdit.new()
 	input.name = "NoiseInput"
-	input.set_position(Vector2(10, 40))
+	input.set_position(Vector2(-200, 227))
 	add_child(input)
 
 	var boton = Button.new()
 	boton.text = "Enviar"
-	boton.set_position(Vector2(10, 80))
+	boton.set_position(Vector2(-100, 227))
 	boton.connect("pressed", self, "_on_boton_pressed")
 	add_child(boton)
 	
