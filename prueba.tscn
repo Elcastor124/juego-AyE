@@ -6,6 +6,7 @@
 [node name="Node2D" type="Node2D"]
 position = Vector2( 500, 300 )
 script = ExtResource( 1 )
+noise_ratio = 0.01
 
 [node name="Depositphotos5783793-stock-photo-vine-leaf-removebg-preview" type="Sprite" parent="."]
 position = Vector2( 34, 1 )

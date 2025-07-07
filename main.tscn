@@ -1,3 +1,9 @@
-[gd_scene format=2]
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://SCRIPTS/generador de ruido.gd" type="Script" id=1]
+[ext_resource path="res://prueba.tscn" type="PackedScene" id=2]
 
 [node name="main" type="Node2D"]
+
+[node name="Node2D" parent="." instance=ExtResource( 2 )]
+script = ExtResource( 1 )
