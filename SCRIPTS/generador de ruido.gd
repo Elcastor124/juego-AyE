@@ -47,7 +47,7 @@ func _ready():
 func crear_ui():
 	var label = Label.new()
 	label.text = "¿Cuánto ruido hay en la imagen? (porcentaje)"
-	label.set_position(Vector2(10, 10))
+	label.set_position(Vector2(-393, 227))
 	add_child(label)
 
 	var input = LineEdit.new()
