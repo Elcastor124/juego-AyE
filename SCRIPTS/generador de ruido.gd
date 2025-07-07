@@ -1,9 +1,9 @@
 extends Node2D
 
 export(String) var image_path = "res://IMAGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png"
-export(float) var noise_ratio   # 10% de ruido
-export(float) var min_value
-export(float) var max_value
+export(float) var noise_ratio = 0.1  # 10% de ruido
+export(float) var min_value = 0.0
+export(float) var max_value = 1.0
 
 var real_noise_percentage = 0.0
 
