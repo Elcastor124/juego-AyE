@@ -62,25 +62,24 @@ func _ready():
 	var seeds_count := int(total_pixels * 0.01)
 	var initial_infected := valid_pixels.slice(0, seeds_count)
 
-	var infected_set := Set.new()
+	var infected_set := {}
 	var infected_pixels := []
 	var queue := initial_infected.duplicate()
 
-	for seed in initial_infected:
-		infected_set.insert(seed)
-
-	img.lock()
+	for seeds in initial_infected:
+		infected_set[seed] = true
 
 	var directions := [Vector2(-1,0), Vector2(1,0), Vector2(0,-1), Vector2(0,1)]
 	var max_queue_size := 10000  # evitar crecimiento descontrolado
 
+	img.lock()
 	while infected_pixels.size() < int(total_pixels * target_noise_ratio) and queue.size() > 0:
 		var current := queue.pop_front()
 		var x := int(current.x)
 		var y := int(current.y)
 
-		if !infected_set.has(current):
-			infected_set.insert(current)
+		if not infected_set.has(current):
+			infected_set[current] = true
 			var col := infection_colors[randi() % infection_colors.size()]
 			img.set_pixel(x, y, col)
 			infected_pixels.append(current)
@@ -98,10 +97,8 @@ func _ready():
 				if n > threshold and randf() < 0.7:
 					queue.append(neighbor)
 
-		# Protección por si se queda sin expansión
 		if queue.size() > max_queue_size:
 			break
-
 	img.unlock()
 
 	# Cálculo del porcentaje
