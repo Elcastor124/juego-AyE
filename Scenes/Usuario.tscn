@@ -1,0 +1,61 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/Volver.gd" type="Script" id=1]
+[ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=2]
+[ext_resource path="res://Scenes/Scripts UI/Usuario.gd" type="Script" id=3]
+
+[node name="Usuario" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Objetos" type="Control" parent="."]
+
+[node name="Blanco2" type="Sprite" parent="Objetos"]
+show_behind_parent = true
+position = Vector2( 568, 343 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Blanco3" type="Sprite" parent="Objetos"]
+self_modulate = Color( 0.6, 0.6, 0.6, 1 )
+show_behind_parent = true
+position = Vector2( 522, 256 )
+scale = Vector2( 0.25, 0.0453737 )
+texture = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="Objetos"]
+margin_left = 383.794
+margin_top = 248.0
+margin_right = 665.794
+margin_bottom = 288.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_outline_modulate = Color( 0.458824, 0.458824, 0.458824, 1 )
+custom_colors/font_color_shadow = Color( 0.686275, 0.686275, 0.686275, 1 )
+text = "Por favor introduzca su usuario y contraseña"
+
+[node name="Usuario" type="TextEdit" parent="Objetos"]
+margin_left = 408.0
+margin_top = 325.0
+margin_right = 640.0
+margin_bottom = 365.0
+script = ExtResource( 3 )
+
+[node name="Contraseña" type="TextEdit" parent="Objetos"]
+margin_left = 408.0
+margin_top = 386.0
+margin_right = 640.0
+margin_bottom = 426.0
+
+[node name="Volver" type="Button" parent="Objetos"]
+margin_left = 408.0
+margin_top = 447.0
+margin_right = 640.0
+margin_bottom = 487.0
+action_mode = 0
+text = "Hecho"
+script = ExtResource( 1 )
+
+[connection signal="text_changed" from="Objetos/Usuario" to="Objetos/Usuario" method="_on_Usuario_text_changed"]
+[connection signal="pressed" from="Objetos/Volver" to="Objetos/Volver" method="_on_Volver_pressed"]

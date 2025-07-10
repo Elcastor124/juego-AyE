@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tomate-removebg-preview.png-0dd2cde40d7b6f725999e431fc0b3662.stex"
+path="res://.import/blanco.jpg-de5ff5244b5117a40e2deb7f8aba4302.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://IMAGES/tomate-removebg-preview.png"
-dest_files=[ "res://.import/tomate-removebg-preview.png-0dd2cde40d7b6f725999e431fc0b3662.stex" ]
+source_file="res://IMAGES/blanco.jpg"
+dest_files=[ "res://.import/blanco.jpg-de5ff5244b5117a40e2deb7f8aba4302.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

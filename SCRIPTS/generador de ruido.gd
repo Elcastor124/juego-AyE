@@ -2,19 +2,21 @@ extends Node2D
 
 export(Array, String) var image_paths = [
 	"res://IMAGES/calabacin.png",
-	"res://IMAGES/depositphotos_5783793-stock-photo-vine-leaf-removebg-preview.png",
+	"res://IMAGES/viña.png",
 	"res://IMAGES/melon.png",
-	"res://IMAGES/tomate-removebg-preview.png"
+	"res://IMAGES/tomate.png"
 ]
 
 export(float) var min_value = 0.1
 export(float) var max_value = 0.5
 export(float) var noise_scale = 20.0
 export(float) var threshold = 0.09
-export(float) var minorpercentageindex = 1.0  # Valor para ajustar penalización
+export(float) var minorpercentageindex = 1.0  # Ajusta la penalización
 
-var input_background = null  # variable global para el estilo
-
+var input_background = null
+var print_label = null
+var Name_label = null
+var arr = null
 
 export(Array, Color) var infection_colors = [
 	Color(0.45, 0.3, 0.1),
@@ -42,6 +44,9 @@ func generar_hoja_con_ruido():
 	seeds = randi()
 	var target_noise_ratio = randf() * (max_value - min_value) + min_value
 	var selected_image_path = image_paths[randi() % image_paths.size()]
+	var image_filename = selected_image_path.get_file()
+	if Name_label:
+		Name_label.text = "Hoja: " + image_filename
 
 	var img = Image.new()
 	if img.load(selected_image_path) != OK:
@@ -126,7 +131,7 @@ func generar_hoja_con_ruido():
 
 
 func crear_ui():
-	# Fondo para inputs (solo LineEdit) y labels
+	# Estilo de fondo para inputs y labels
 	input_background = StyleBoxFlat.new()
 	input_background.bg_color = Color(0.2, 0.2, 0.2, 1)
 	input_background.border_color = Color(0.4, 0.4, 0.4)
@@ -135,7 +140,6 @@ func crear_ui():
 	input_background.border_width_right = 2
 	input_background.border_width_bottom = 2
 
-	# Ajustar margenes internos para centrar texto (padding)
 	var font_size = 14
 	var padding = font_size / 2
 	input_background.content_margin_left = padding
@@ -150,11 +154,11 @@ func crear_ui():
 	label.rect_min_size = Vector2(300, 30)
 	label.add_stylebox_override("normal", input_background)
 	label.add_color_override("font_color", Color(1, 1, 1))
-	label.align = Label.ALIGN_CENTER        # CENTRADO HORIZONTAL
-	label.valign = Label.VALIGN_CENTER     # CENTRADO VERTICAL
+	label.align = Label.ALIGN_CENTER
+	label.valign = Label.VALIGN_CENTER
 	add_child(label)
 
-	# Input de porcentaje
+	# Input porcentaje
 	var input = LineEdit.new()
 	input.name = "NoiseInput"
 	input.rect_position = Vector2(-75, 230)
@@ -169,7 +173,7 @@ func crear_ui():
 	boton.connect("pressed", self, "_on_boton_pressed")
 	add_child(boton)
 
-	# Label de puntuación
+	# Label puntuación
 	var score_label = Label.new()
 	score_label.name = "ScoreLabel"
 	score_label.text = "Puntuación: 0"
@@ -177,16 +181,29 @@ func crear_ui():
 	score_label.rect_min_size = Vector2(150, 30)
 	score_label.add_stylebox_override("normal", input_background)
 	score_label.add_color_override("font_color", Color(1, 1, 1))
-	score_label.align = Label.ALIGN_CENTER    # CENTRADO HORIZONTAL
-	score_label.valign = Label.VALIGN_CENTER # CENTRADO VERTICAL
+	score_label.align = Label.ALIGN_CENTER
+	score_label.valign = Label.VALIGN_CENTER
 	add_child(score_label)
 
-	# Input nombre de usuario
+	# Label para mensajes
+	print_label = Label.new()
+	print_label.name = "print_label"
+	print_label.text = ""
+	print_label.rect_position = Vector2(300, -220)
+	print_label.rect_min_size = Vector2(150, 100)
+	print_label.add_stylebox_override("normal", input_background)
+	print_label.add_color_override("font_color", Color(1, 1, 1))
+	print_label.align = Label.ALIGN_CENTER
+	print_label.valign = Label.VALIGN_TOP
+	print_label.autowrap = true
+	add_child(print_label)
+
+	# Input nombre usuario
 	var user_input = LineEdit.new()
 	user_input.name = "UserNameInput"
 	user_input.placeholder_text = "Nombre de usuario"
 	user_input.rect_position = Vector2(-470, -270)
-	user_input.rect_min_size = Vector2(250, 30)  # más largo como pediste
+	user_input.rect_min_size = Vector2(250, 30)
 	add_child(user_input)
 
 	# Botón guardar puntuación
@@ -197,7 +214,84 @@ func crear_ui():
 	save_button.connect("pressed", self, "_on_save_pressed")
 	add_child(save_button)
 	
+	
+	#label Nombre hoja 
+	# Label nombre de hoja
+	Name_label = Label.new()
+	Name_label.name = "NameLabel"
+	Name_label.text = "Hoja: "
+	Name_label.rect_position = Vector2(-100, 200)  # Posición debajo del sprite
+	Name_label.rect_min_size = Vector2(300, 30)
+	Name_label.align = Label.ALIGN_CENTER
+	Name_label.valign = Label.VALIGN_CENTER
+	Name_label.add_color_override("font_color", Color(1, 1, 1))
+	Name_label.add_stylebox_override("normal", input_background)
+	add_child(Name_label)
+
+	
+
 	mostrar_ranking()
+
+
+func actualizar_print_label(texto: String) -> void:
+	var print_label = get_node("print_label")
+	print_label.text = texto
+	# Ajustar tamaño mínimo vertical para que el texto quepa
+	var min_size = print_label.get_minimum_size()
+	print_label.rect_min_size.y = min_size.y + 10
+
+
+func _on_boton_pressed():
+	var input = get_node("NoiseInput")
+	var texto = input.text.strip_edges()
+	var valor = texto.to_float()
+
+	var diferencia = abs(valor - real_noise_percentage)
+	var puntuacion = clamp(10.0 - (diferencia * minorpercentageindex), 0, 10)
+
+	score += int(puntuacion)
+
+	var score_label = get_node("ScoreLabel")
+	score_label.text = "Puntuación: %d" % score
+
+	if diferencia <= 5.0:
+		actualizar_print_label("¡Muy bien! Ruido real: %.2f%% - Acierto cercano." % real_noise_percentage)
+	else:
+		actualizar_print_label("Fallaste. Ruido real: %.2f%%. Tu estimación: %.2f%%" % [real_noise_percentage, valor])
+
+	input.text = ""  # Limpiar input
+	generar_hoja_con_ruido()
+
+
+func _on_save_pressed():
+	var user_input = get_node("UserNameInput")
+	var nombre = user_input.text.strip_edges()
+
+	if nombre == "":
+		print("Introduce un nombre de usuario.")
+		return
+
+	var path = "C:/Users/gcampos/juego-AyE/scores.json"
+	var puntuaciones = {}
+
+	var file = File.new()
+	if file.file_exists(path):
+		file.open(path, File.READ)
+		var contenido = file.get_as_text()
+		file.close()
+		if contenido != "":
+			puntuaciones = parse_json(contenido)
+
+	puntuaciones[nombre] = score
+
+	file.open(path, File.WRITE)
+	file.store_string(to_json(puntuaciones))
+	file.close()
+
+	print("Puntuación guardada para ", nombre, ": ", score)
+	arr.sort_custom(self, "_sort_scores_desc")
+	mostrar_ranking()
+
 
 func mostrar_ranking():
 	var path = "C:/Users/gcampos/juego-AyE/scores.json"
@@ -211,56 +305,62 @@ func mostrar_ranking():
 		if contenido != "":
 			puntuaciones = parse_json(contenido)
 
-	var arr = []
+	arr = []
 	for nombre in puntuaciones.keys():
 		arr.append({"nombre": nombre, "score": puntuaciones[nombre]})
+	
+	ordenar_ranking(arr)  # Ordena antes de mostrar
 
-	arr.sort_custom(self, "_sort_scores_desc")
-
-	# Buscar panel contenedor o crearlo
 	var ranking_panel = get_node_or_null("RankingPanel")
 	if ranking_panel == null:
 		ranking_panel = Panel.new()
 		ranking_panel.name = "RankingPanel"
 		ranking_panel.rect_position = Vector2(-470, -220)
-		ranking_panel.rect_min_size = Vector2(150,100)
+		ranking_panel.rect_min_size = Vector2(150, 100)
 		ranking_panel.add_stylebox_override("panel", input_background)
 		add_child(ranking_panel)
 	else:
-		ranking_panel.clear()
+		for child in ranking_panel.get_children():
+			child.queue_free()
 
-	# Crear label título
 	var title_label = Label.new()
 	title_label.text = "Ranking"
 	title_label.align = Label.ALIGN_CENTER
-	title_label.add_color_override("font_color", Color(1,1,1))
+	title_label.add_color_override("font_color", Color(1, 1, 1))
 	title_label.rect_position = Vector2(0, 10)
-	title_label.rect_min_size = Vector2(220, 30)
+	title_label.rect_min_size = Vector2(150, 30)
 	ranking_panel.add_child(title_label)
 
-	# Crear VBoxContainer para las labels
-	var ranking_container = get_node_or_null("RankingContainer")
-	if ranking_container == null:
-		ranking_container = VBoxContainer.new()
-		ranking_container.name = "RankingContainer"
-		ranking_container.anchor_right = 1.0
-		ranking_container.anchor_bottom = 1.0
-		ranking_container.margin_left = 10
-		ranking_container.margin_top = 40
-		ranking_container.margin_right = -10
-		ranking_container.margin_bottom = -10
-		ranking_panel.add_child(ranking_container)
-	else:
-		ranking_container.clear()
+	var ranking_container = VBoxContainer.new()
+	ranking_container.name = "RankingContainer"
+	ranking_container.anchor_right = 1.0
+	ranking_container.anchor_bottom = 1.0
+	ranking_container.margin_left = 10
+	ranking_container.margin_top = 40
+	ranking_container.margin_right = -10
+	ranking_container.margin_bottom = -10
+	ranking_panel.add_child(ranking_container)
 
 	for entry in arr:
 		var label = Label.new()
-		label.text = "%s : %d" % [entry.nombre, entry.score]
+		label.text = "%s : %d" % [entry["nombre"], entry["score"]]
 		label.add_color_override("font_color", Color(1, 1, 1))
 		label.align = Label.ALIGN_CENTER
 		ranking_container.add_child(label)
 
-	# Ajustar tamaño del panel dinámicamente según contenido (sumando título)
 	var height = ranking_container.get_combined_minimum_size().y + title_label.rect_min_size.y + 30
-	ranking_panel.rect_min_size = Vector2(220, height)
+	ranking_panel.rect_min_size = Vector2(150, height)
 
+func ordenar_ranking(arr):
+	for i in range(arr.size()):
+		for j in range(i + 1, arr.size()):
+			if arr[j]["score"] > arr[i]["score"]:
+				var temp = arr[i]
+				arr[i] = arr[j]
+				arr[j] = temp
+
+
+
+
+func _sort_scores_desc(a, b):
+	return b.score - a.score

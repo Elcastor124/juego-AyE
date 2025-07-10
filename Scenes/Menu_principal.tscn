@@ -1,0 +1,73 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://IMAGES/fondo app.jpg" type="Texture" id=1]
+[ext_resource path="res://Scenes/Scripts UI/OptionButton.gd" type="Script" id=2]
+[ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=3]
+[ext_resource path="res://Scenes/Scripts UI/Iniciar Sesión.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/Scripts UI/Iniciar.gd" type="Script" id=6]
+
+[node name="Menu_principal" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Container" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Iniciar" type="Button" parent="Container"]
+margin_left = 407.0
+margin_top = 477.0
+margin_right = 607.0
+margin_bottom = 527.0
+text = "Iniciar"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Iniciar Sesión" type="Button" parent="Container"]
+margin_left = 761.0
+margin_top = 477.0
+margin_right = 961.0
+margin_bottom = 527.0
+text = "Iniciar Sesión"
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="OptionButton" type="OptionButton" parent="Container"]
+margin_left = 53.0
+margin_top = 477.0
+margin_right = 253.0
+margin_bottom = 527.0
+rect_min_size = Vector2( 50, 0 )
+text = "Modo de digficultad"
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="FondoApp" type="Sprite" parent="."]
+show_behind_parent = true
+position = Vector2( 500, 240 )
+scale = Vector2( 0.616455, 0.6 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Blanco" type="Sprite" parent="FondoApp"]
+show_behind_parent = true
+position = Vector2( 110.308, 171.667 )
+scale = Vector2( 1.62218, 1.66667 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[connection signal="pressed" from="Container/Iniciar" to="Container/Iniciar" method="_on_Iniciar_pressed"]
+[connection signal="pressed" from="Container/Iniciar Sesión" to="Container/Iniciar Sesión" method="_on_Iniciar_Sesin_pressed"]
