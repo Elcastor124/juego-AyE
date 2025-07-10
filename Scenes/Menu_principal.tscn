@@ -71,3 +71,4 @@ __meta__ = {
 
 [connection signal="pressed" from="Container/Iniciar" to="Container/Iniciar" method="_on_Iniciar_pressed"]
 [connection signal="pressed" from="Container/Iniciar Sesión" to="Container/Iniciar Sesión" method="_on_Iniciar_Sesin_pressed"]
+[connection signal="item_selected" from="Container/OptionButton" to="Container/OptionButton" method="_on_OptionButton_item_selected"]

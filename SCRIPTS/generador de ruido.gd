@@ -35,14 +35,39 @@ func _ready():
 	crear_ui()
 	generar_hoja_con_ruido()
 
-
 func generar_hoja_con_ruido():
 	if current_sprite:
 		remove_child(current_sprite)
 	current_sprite = null
 
 	seeds = randi()
-	var target_noise_ratio = randf() * (max_value - min_value) + min_value
+
+	var target_noise_ratio = 0.0
+	var threshold = 0.0
+
+	match Global.modo:
+		1:
+			# 0-25%
+			target_noise_ratio = randf() * 0.25
+			# map target_noise_ratio (0.0-0.25) a threshold entre 0.9 (mínimo ruido) y 0.7 (más ruido)
+			threshold = lerp(0.9, 0.7, target_noise_ratio / 0.25)
+		2:
+			# 25-50%
+			target_noise_ratio = 0.25 + randf() * 0.25
+			# map target_noise_ratio (0.25-0.5) a threshold entre 0.6 (menos ruido) y 0.3 (más ruido)
+			threshold = lerp(0.6, 0.3, (target_noise_ratio - 0.25) / 0.25)
+		3:
+			# 50-100%
+			target_noise_ratio = 0.5 + randf() * 0.5
+			# map target_noise_ratio (0.5-1.0) a threshold entre 0.2 (menos ruido) y -0.3 (más ruido)
+			threshold = lerp(0.2, -0.3, (target_noise_ratio - 0.5) / 0.5)
+		_:
+			target_noise_ratio = randf()
+			threshold = 0.3
+
+	print("Modo:", Global.modo, " Ruido objetivo:", target_noise_ratio, " Threshold:", threshold)
+
+
 	var selected_image_path = image_paths[randi() % image_paths.size()]
 	var image_filename = selected_image_path.get_file()
 	if Name_label:
@@ -128,6 +153,7 @@ func generar_hoja_con_ruido():
 	sprite.texture = tex
 	add_child(sprite)
 	current_sprite = sprite
+
 
 
 func crear_ui():
