@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/Menu_principal.tscn"
 config/icon="res://icon.png"
 <<<<<<<HEADrun/main_scene="res://main.tscn"
 
+[autoload]
+
+Global="*res://Scenes/global.gd"
+
 [global]
 
 fondo=false

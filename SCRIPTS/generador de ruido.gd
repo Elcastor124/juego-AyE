@@ -176,7 +176,41 @@ func crear_ui():
 	# Label puntuación
 	var score_label = Label.new()
 	score_label.name = "ScoreLabel"
-	score_label.text = "Puntuación: 0"
+	if Global.Usuario == null:
+		score_label.text = "Puntuación: 0"
+	else:
+		var path = "res://scores.json"
+		var puntuaciones = {}
+		var file = File.new()
+
+		if file.file_exists(path):
+			var err = file.open(path, File.READ)
+			if err == OK:
+				var contenido = file.get_as_text()
+				file.close()
+
+				if contenido.strip_edges() != "":
+					var json_result = JSON.parse(contenido)
+					if json_result.error == OK:
+						puntuaciones = json_result.result
+					else:
+						print("Error al parsear JSON:", json_result.error_string)
+						puntuaciones = {}
+				else:
+					puntuaciones = {}
+
+				var user_score = 0
+				if puntuaciones.has(Global.Usuario):
+					user_score = puntuaciones[Global.Usuario]
+
+				score_label.text = "Puntuación: %d" % user_score
+			else:
+				print("Error al abrir archivo para lectura:", err)
+				score_label.text = "Puntuación: 0"
+		else:
+			score_label.text = "Puntuación: 0"
+
+
 	score_label.rect_position = Vector2(300, -270)
 	score_label.rect_min_size = Vector2(150, 30)
 	score_label.add_stylebox_override("normal", input_background)
@@ -202,6 +236,9 @@ func crear_ui():
 	var user_input = LineEdit.new()
 	user_input.name = "UserNameInput"
 	user_input.placeholder_text = "Nombre de usuario"
+
+	if Global.Usuario != null:
+		user_input.text = Global.Usuario  # Aquí asignas el texto visible
 	user_input.rect_position = Vector2(-470, -270)
 	user_input.rect_min_size = Vector2(250, 30)
 	add_child(user_input)
@@ -271,7 +308,7 @@ func _on_save_pressed():
 		print("Introduce un nombre de usuario.")
 		return
 
-	var path = "C:/Users/gcampos/juego-AyE/scores.json"
+	var path = "res://scores.json"
 	var puntuaciones = {}
 
 	var file = File.new()
@@ -294,7 +331,7 @@ func _on_save_pressed():
 
 
 func mostrar_ranking():
-	var path = "C:/Users/gcampos/juego-AyE/scores.json"
+	var path = "res://scores.json"
 	var file = File.new()
 	var puntuaciones = {}
 
