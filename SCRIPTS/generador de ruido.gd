@@ -11,7 +11,10 @@ export(float) var min_value = 0.1
 export(float) var max_value = 0.5
 export(float) var noise_scale = 20.0
 export(float) var threshold = 0.09
-export(float) var minorpercentageindex = 1.0  # Ajusta la penalización
+export(float) var minorpercentageindex = 10.0  # Ajusta la penalización
+var aciertos_por_rango = { "0-25": 0, "25-50": 0, "50-100": 0 }
+var intentos_por_rango = { "0-25": 0, "25-50": 0, "50-100": 0 }
+
 
 var input_background = null
 var print_label = null
@@ -63,7 +66,7 @@ func generar_hoja_con_ruido():
 			threshold = lerp(0.2, -0.3, (target_noise_ratio - 0.5) / 0.5)
 		_:
 			target_noise_ratio = randf()
-			threshold = 0.3
+			threshold = lerp(0.2, -0.9, (target_noise_ratio - 0.5))
 
 	print("Modo:", Global.modo, " Ruido objetivo:", target_noise_ratio, " Threshold:", threshold)
 
@@ -71,7 +74,8 @@ func generar_hoja_con_ruido():
 	var selected_image_path = image_paths[randi() % image_paths.size()]
 	var image_filename = selected_image_path.get_file()
 	if Name_label:
-		Name_label.text = "Hoja: " + image_filename
+		Name_label.text = "Hoja: " + image_filename.get_basename()
+
 
 	var img = Image.new()
 	if img.load(selected_image_path) != OK:
@@ -238,7 +242,7 @@ func crear_ui():
 
 
 	score_label.rect_position = Vector2(300, -270)
-	score_label.rect_min_size = Vector2(150, 30)
+	score_label.rect_min_size = Vector2(200, 30)
 	score_label.add_stylebox_override("normal", input_background)
 	score_label.add_color_override("font_color", Color(1, 1, 1))
 	score_label.align = Label.ALIGN_CENTER
@@ -250,10 +254,10 @@ func crear_ui():
 	print_label.name = "print_label"
 	print_label.text = ""
 	print_label.rect_position = Vector2(300, -220)
-	print_label.rect_min_size = Vector2(150, 100)
+	print_label.rect_min_size = Vector2(200, 100)
 	print_label.add_stylebox_override("normal", input_background)
 	print_label.add_color_override("font_color", Color(1, 1, 1))
-	print_label.align = Label.ALIGN_CENTER
+	print_label.align = Label.ALIGN_LEFT
 	print_label.valign = Label.VALIGN_TOP
 	print_label.autowrap = true
 	add_child(print_label)
@@ -290,9 +294,6 @@ func crear_ui():
 	Name_label.add_color_override("font_color", Color(1, 1, 1))
 	Name_label.add_stylebox_override("normal", input_background)
 	add_child(Name_label)
-
-	
-
 	mostrar_ranking()
 
 
@@ -317,13 +318,66 @@ func _on_boton_pressed():
 	var score_label = get_node("ScoreLabel")
 	score_label.text = "Puntuación: %d" % score
 
-	if diferencia <= 5.0:
-		actualizar_print_label("¡Muy bien! Ruido real: %.2f%% - Acierto cercano." % real_noise_percentage)
-	else:
-		actualizar_print_label("Fallaste. Ruido real: %.2f%%. Tu estimación: %.2f%%" % [real_noise_percentage, valor])
+	match Global.modo:
+		4:
+			# Clasificar según real_noise_percentage
+			var rango = ""
+			if real_noise_percentage <= 25.0:
+				rango = "0-25"
+			elif real_noise_percentage <= 50.0:
+				rango = "25-50"
+			else:
+				rango = "50-100"
+
+			intentos_por_rango[rango] += 1
+
+			if diferencia <= 5.0:
+				aciertos_por_rango[rango] += 1
+				actualizar_print_label("Modo 0: Ruido real: %.2f%% en rango %s.\n¡Muy bien! Acierto cercano.\nPuntuación en rango: %d/%d" % [real_noise_percentage, rango, aciertos_por_rango[rango], intentos_por_rango[rango]])
+			else:
+				actualizar_print_label("Modo 0: Ruido real: %.2f%% en rango %s.\nFallaste. Tu estimación: %.2f%%\nPuntuación en rango: %d/%d" % [real_noise_percentage, rango, valor, aciertos_por_rango[rango], intentos_por_rango[rango]])
+
+			# Mensaje extra para acierto o fallo
+			if diferencia <= 5.0:
+				actualizar_print_label("¡Muy bien! Ruido real: %.2f%% - Acierto cercano." % real_noise_percentage)
+			else:
+				actualizar_print_label("Fallaste. Ruido real: %.2f%%. Tu estimación: %.2f%%" % [real_noise_percentage, valor])
+
+		_:
+			var rango = ""
+			if real_noise_percentage <= 25.0:
+				rango = "0-25"
+			elif real_noise_percentage <= 50.0:
+				rango = "25-50"
+			else:
+				rango = "50-100"
+
+			intentos_por_rango[rango] += 1
+
+			if diferencia <= 5.0:
+				aciertos_por_rango[rango] += 1
+				actualizar_print_label("Modo 0: Ruido real: %.2f%% en rango %s.\n¡Muy bien! Acierto cercano." % [real_noise_percentage, rango])
+			else:
+				actualizar_print_label("Modo 0: Ruido real: %.2f%% en rango %s.\nFallaste. Tu estimación: %.2f%%" % [real_noise_percentage, rango, valor])
+
+			var resumen = "\n--- Puntuación total por rangos ---\n"
+			for r in ["0-25", "25-50", "50-100"]:
+				var intentos = intentos_por_rango.get(r, 0)
+				var aciertos = aciertos_por_rango.get(r, 0)
+
+				# Solo mostrar el ruido real para el rango actual
+				if r == rango:
+					resumen += "Ruido real: %.2f%%\n" % real_noise_percentage
+
+				resumen += "Rango %s: %d/%d aciertos\n" % [r, aciertos, intentos]
+
+
+			actualizar_print_label(resumen) 
 
 	input.text = ""  # Limpiar input
 	generar_hoja_con_ruido()
+
+
 
 
 func _on_save_pressed():
@@ -408,7 +462,7 @@ func mostrar_ranking():
 		var label = Label.new()
 		label.text = "%s : %d" % [entry["nombre"], entry["score"]]
 		label.add_color_override("font_color", Color(1, 1, 1))
-		label.align = Label.ALIGN_CENTER
+		label.align = Label.ALIGN_LEFT
 		ranking_container.add_child(label)
 
 	var height = ranking_container.get_combined_minimum_size().y + title_label.rect_min_size.y + 30

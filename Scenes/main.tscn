@@ -6,6 +6,7 @@
 [node name="main" type="Node2D"]
 
 [node name="Node2D" parent="." instance=ExtResource( 1 )]
+minorpercentageindex = 0.3
 
 [node name="Blanco2" type="Sprite" parent="."]
 show_behind_parent = true
