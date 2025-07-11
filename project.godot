@@ -26,6 +26,7 @@ Global="*res://Scenes/Scripts UI/global.gd"
 [global]
 
 fondo=false
+Windows=false
 
 [gui]
 

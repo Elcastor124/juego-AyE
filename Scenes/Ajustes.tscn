@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=1]
 [ext_resource path="res://Scenes/Scripts UI/Ajustes-Lbel.gd" type="Script" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://Scenes/Ajustes-Txt.gd" type="Script" id=7]
 [ext_resource path="res://IMAGES/hojas.png" type="Texture" id=8]
 [ext_resource path="res://Scenes/HSlider.gd" type="Script" id=9]
+[ext_resource path="res://Scenes/ColoresInfeccion.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/TiposHoja.gd" type="Script" id=11]
 
 [sub_resource type="Theme" id=1]
 default_font = ExtResource( 3 )
@@ -38,11 +40,48 @@ scale = Vector2( 0.6, 0.601 )
 texture = ExtResource( 8 )
 flip_h = true
 
+[node name="OptionButton" type="OptionButton" parent="Blanco"]
+margin_left = -262.0
+margin_top = -23.0
+margin_right = -79.0
+margin_bottom = 9.0
+script = ExtResource( 11 )
+
+[node name="RichTextLabel2" type="Label" parent="Blanco/OptionButton"]
+self_modulate = Color( 0, 0, 0, 1 )
+margin_top = -48.0
+margin_right = 176.0
+margin_bottom = -8.0
+focus_mode = 2
+theme = ExtResource( 5 )
+custom_colors/font_color_shadow = Color( 0.537255, 0.486275, 0.486275, 1 )
+text = "Tipo de Hoja"
+align = 1
+
+[node name="OptionButton2" type="OptionButton" parent="Blanco"]
+margin_left = 71.0
+margin_top = -23.0
+margin_right = 254.0
+margin_bottom = 9.0
+script = ExtResource( 10 )
+
+[node name="RichTextLabel2" type="Label" parent="Blanco/OptionButton2"]
+self_modulate = Color( 0, 0, 0, 1 )
+margin_left = -3.0
+margin_top = -48.0
+margin_right = 193.0
+margin_bottom = -8.0
+focus_mode = 2
+theme = ExtResource( 5 )
+custom_colors/font_color_shadow = Color( 0.537255, 0.486275, 0.486275, 1 )
+text = "Color de la Infección"
+align = 1
+
 [node name="HSlider" type="HSlider" parent="."]
 margin_left = 275.0
-margin_top = 240.0
+margin_top = 167.0
 margin_right = 795.0
-margin_bottom = 270.0
+margin_bottom = 197.0
 script = ExtResource( 9 )
 
 [node name="RichTextLabel" type="Label" parent="HSlider"]
@@ -81,5 +120,7 @@ scroll_following = true
 selection_enabled = true
 script = ExtResource( 7 )
 
+[connection signal="item_selected" from="Blanco/OptionButton" to="Blanco/OptionButton" method="_on_OptionButton_item_selected"]
+[connection signal="item_selected" from="Blanco/OptionButton2" to="Blanco/OptionButton2" method="_on_OptionButton_item_selected"]
 [connection signal="value_changed" from="HSlider" to="HSlider" method="_on_HSlider_value_changed"]
 [connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]

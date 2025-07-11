@@ -11,11 +11,12 @@ export(float) var min_value = 0.1
 export(float) var max_value = 0.5
 export(float) var noise_scale = 20.0
 export(float) var threshold 
-export(float) var minorpercentageindex = 0.1  # Ajusta la penalización
+export(float) var minorpercentageindex = 0.1  # Ajusta la penalización        
+export(String) var path_json := "res://scores.json"  # Ruta del JSON
 var aciertos_por_rango = { "0-25": 0, "25-50": 0, "50-100": 0 }
 var intentos_por_rango = { "0-25": 0, "25-50": 0, "50-100": 0 }
 var esperando_password = false
-
+var input
 var input_background = null
 var print_label = null
 var Name_label = null
@@ -23,26 +24,39 @@ var arr = null
 var haterminado
 var total_valid_pixels = 0
 var my_theme = preload("res://VAmosadejarloFino.tres")
+var MAX_RANKING_HEIGHT = 400  
+var LABEL_WIDTH  = 140
+var LABEL_MARGIN  = 0
 
-export(Array, Color) var infection_colors = [
-	Color(0.45, 0.3, 0.1),
-	Color(0.7, 0.6, 0.1),
-	Color(0.2, 0.2, 0.2),
-	Color(0.4, 0.1, 0.1),
-	Color(0.1, 0.3, 0.1)
-]
+var infection_colors = []
 
 var real_noise_percentage = 0.0
 var score = 0
-var seeds = 1234
+var seeds 
 var current_sprite = null
 
 func _ready():
-	crear_ui()
-	generar_hoja_con_ruido()
-	minorpercentageindex = Global.minorpercentage / 100
 	randomize()
-	seeds = randi()
+	crear_ui()
+	centesimas = int((OS.get_ticks_usec() * OS.get_ticks_msec() / 10) % 100)  # Centésimas de segundo (0 a 99)
+	seeds = randi() ^ centesimas
+	match Global.color:
+		1:
+			infection_colors = Global.infection_colors_marron
+		2:
+			 infection_colors = Global.infection_colors_blanco
+		3:
+			infection_colors = Global.infection_colors_amarillo
+		_:
+			infection_colors = Global.infection_colors_marron
+	
+	generar_hoja_con_ruido()
+	if Global.minorpercentage == null:
+		Global.minorpercentage = minorpercentageindex
+	minorpercentageindex = Global.minorpercentage / 100
+
+
+
 
 var is_generating = false
 var infected_set = {}
@@ -59,13 +73,17 @@ var tex = null
 var current_index = 0
 var batch_size = 600  # cuantos píxeles se procesan antes de refrescar la imagen visible
 var password_input
+var centesimas
+
+func _physics_process(delta):
+	centesimas = int((OS.get_ticks_msec() / 10) % 100)  # Centésimas de segundo (0 a 99)
+	seeds = randi() ^ centesimas
+
 
 func generar_hoja_con_ruido():
 	haterminado = false
 	if is_generating:
 		return # Ya se está generando algo
-
-	seeds = randi()
 
 	# Ajustar target_noise_ratio y threshold según modo
 	if Global.modo == 1:
@@ -83,7 +101,18 @@ func generar_hoja_con_ruido():
 
 		print("Modo:", Global.modo, " Ruido objetivo:", target_noise_ratio, " Threshold:", threshold)
 		
-	var selected_image_path = image_paths[randi() % image_paths.size()]
+	var selected_image_path 
+	match Global.tipohoja:
+		1:
+			selected_image_path = "res://IMAGES/tomate.png"
+		2:
+			selected_image_path = "res://IMAGES/melon.png"
+		3:
+			selected_image_path = "res://IMAGES/calabacin.png"
+		4:
+			selected_image_path ="res://IMAGES/viña.png"
+		_:
+			selected_image_path = image_paths[randi() % image_paths.size()]
 	var image_filename = selected_image_path.get_file()
 	if Name_label:
 		Name_label.text = "Hoja: " + image_filename.get_basename()
@@ -94,7 +123,7 @@ func generar_hoja_con_ruido():
 		return
 
 	noise = OpenSimplexNoise.new()
-	noise.seed = seeds
+	noise.seed = seeds - randf()
 	noise.octaves = 4
 	noise.period = 10.0
 	noise.persistence = 0.5
@@ -226,11 +255,12 @@ func crear_ui():
 	add_child(label)
 
 	# Input porcentaje
-	var input = LineEdit.new()
+	input = LineEdit.new()
 	input.name = "NoiseInput"
 	input.rect_position = Vector2(-75, 230)
 	input.rect_min_size = Vector2(150, 30)
 	input.theme = my_theme
+	input.grab_click_focus()
 	add_child(input)
 
 	# Botón enviar
@@ -338,7 +368,9 @@ func crear_ui():
 	Name_label.add_stylebox_override("normal", input_background)
 	Name_label.theme = my_theme
 	add_child(Name_label)
+	input.grab_focus()
 	mostrar_ranking()
+	
 
 
 func actualizar_print_label(texto: String) -> void:
@@ -426,6 +458,7 @@ func _on_boton_pressed():
 
 
 				actualizar_print_label(resumen) 
+				input.grab_focus()
 
 		
 		# Resetear la imagen anterior
@@ -523,8 +556,18 @@ func _on_save_pressed():
 	password_input.visible = false # Ocultar campo de contraseña después de guardar
 	contrasena = null
 	password_input.text = ""
+	password_input.grab_focus()
 
 	mostrar_ranking() # Esta función debe estar definida en tu script
+	input.grab_focus()
+
+
+
+
+func _input(event):
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.scancode == KEY_ENTER or event.scancode == KEY_KP_ENTER:
+			_on_boton_pressed()
 
 func mostrar_ranking():
 	var path = "res://scores.json"
@@ -538,54 +581,68 @@ func mostrar_ranking():
 		if contenido != "":
 			puntuaciones = parse_json(contenido)
 
-	arr = []
+	var arr = []
 	for nombre in puntuaciones.keys():
 		arr.append({"nombre": nombre, "score": puntuaciones[nombre]})
 	
-	ordenar_ranking(arr)  # Ordena antes de mostrar
+	ordenar_ranking(arr)
 
+	# Panel contenedor
 	var ranking_panel = get_node_or_null("RankingPanel")
 	if ranking_panel == null:
 		ranking_panel = Panel.new()
 		ranking_panel.name = "RankingPanel"
 		ranking_panel.rect_position = Vector2(-470, -220)
-		ranking_panel.rect_min_size = Vector2(150, 100)
+		ranking_panel.rect_min_size = Vector2(LABEL_WIDTH + 10, MAX_RANKING_HEIGHT)
 		ranking_panel.add_stylebox_override("panel", input_background)
 		add_child(ranking_panel)
 	else:
 		for child in ranking_panel.get_children():
 			child.queue_free()
 
+	# Título
 	var title_label = Label.new()
 	title_label.text = "Ranking"
 	title_label.align = Label.ALIGN_CENTER
 	title_label.add_color_override("font_color", Color(1, 1, 1))
-	title_label.rect_position = Vector2(0, 10)
-	title_label.rect_min_size = Vector2(150, 30)
+	title_label.rect_min_size = Vector2(LABEL_WIDTH, 30)
 	title_label.theme = my_theme
 	ranking_panel.add_child(title_label)
 
-	var ranking_container = VBoxContainer.new()
-	ranking_container.name = "RankingContainer"
-	ranking_container.anchor_right = 1.0
-	ranking_container.anchor_bottom = 1.0
-	ranking_container.margin_left = 10
-	ranking_container.margin_top = 40
-	ranking_container.margin_right = -10
-	ranking_container.margin_bottom = -10
-	ranking_panel.add_child(ranking_container)
+	# ScrollContainer
+	var scroll = ScrollContainer.new()
+	scroll.rect_min_size = Vector2(LABEL_WIDTH + 10, MAX_RANKING_HEIGHT - 40)
+	scroll.margin_top = 40
+	scroll.scroll_vertical_enabled = false  # Desactivamos scroll: corte manual
+	ranking_panel.add_child(scroll)
 
+	# VBox para etiquetas
+	var container = VBoxContainer.new()
+	container.name = "RankingContainer"
+	container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	scroll.add_child(container)
+
+	# Mostrar hasta que se alcance la altura máxima
+	var used_height := 0
 	for entry in arr:
 		var label = Label.new()
 		label.text = "%s : %d" % [entry["nombre"], entry["score"]]
 		label.add_color_override("font_color", Color(1, 1, 1))
-		label.align = Label.ALIGN_LEFT
+		label.autowrap = true
+		label.rect_min_size = Vector2(LABEL_WIDTH, 0)
 		label.theme = my_theme
-		ranking_container.add_child(label)
+		container.add_child(label)
+		
+		# Estimar altura (antes del render)
+		label.force_update_transform()
+		var est_height = label.get_combined_minimum_size().y + LABEL_MARGIN
+		used_height += est_height
 
-	var height = ranking_container.get_combined_minimum_size().y + title_label.rect_min_size.y + 30
-	ranking_panel.rect_min_size = Vector2(150, height)
-
+		# Si se pasa, eliminar y salir
+		if used_height > MAX_RANKING_HEIGHT - 40:
+			container.remove_child(label)
+			label.queue_free()
+			break
 func ordenar_ranking(arr):
 	for i in range(arr.size()):
 		for j in range(i + 1, arr.size()):
@@ -593,9 +650,6 @@ func ordenar_ranking(arr):
 				var temp = arr[i]
 				arr[i] = arr[j]
 				arr[j] = temp
-
-
-
 
 func _sort_scores_desc(a, b):
 	return b.score - a.score
