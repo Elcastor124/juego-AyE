@@ -1,11 +1,14 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scenes/Scripts UI/Volver.gd" type="Script" id=1]
 [ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=2]
 [ext_resource path="res://Scenes/Scripts UI/Usuario.gd" type="Script" id=3]
-[ext_resource path="res://Scenes/Contraseña.gd" type="Script" id=4]
-[ext_resource path="res://Scenes/registrarme.gd" type="Script" id=5]
+[ext_resource path="res://Scenes/Scripts UI/Contraseña.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/Scripts UI/registrarme.gd" type="Script" id=5]
 [ext_resource path="res://IMAGES/curvas.png" type="Texture" id=6]
+[ext_resource path="res://VAmosadejarloFino.tres" type="Theme" id=7]
+[ext_resource path="res://Themeusuario.tres" type="Theme" id=8]
+[ext_resource path="res://Scenes/Scripts UI/Button.gd" type="Script" id=9]
 
 [node name="Usuario" type="Control"]
 anchor_right = 1.0
@@ -30,28 +33,31 @@ position = Vector2( 568, 343 )
 texture = ExtResource( 2 )
 
 [node name="Blanco3" type="Sprite" parent="Objetos"]
-self_modulate = Color( 0.6, 0.6, 0.6, 1 )
+self_modulate = Color( 0.239216, 0.227451, 0.270588, 1 )
 show_behind_parent = true
 position = Vector2( 526, 231.5 )
 scale = Vector2( 0.25, 0.0453737 )
 texture = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="Objetos"]
-margin_left = 387.794
-margin_top = 223.5
-margin_right = 669.794
-margin_bottom = 263.5
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_colors/font_outline_modulate = Color( 0.458824, 0.458824, 0.458824, 1 )
-custom_colors/font_color_shadow = Color( 0.686275, 0.686275, 0.686275, 1 )
+margin_left = 286.0
+margin_top = 206.0
+margin_right = 765.0
+margin_bottom = 256.0
+theme = ExtResource( 8 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 text = "Por favor introduzca su usuario y contraseña"
 align = 1
+valign = 1
 
 [node name="Usuario" type="TextEdit" parent="Objetos"]
 margin_left = 412.0
 margin_top = 300.5
 margin_right = 644.0
 margin_bottom = 340.5
+theme = ExtResource( 7 )
 script = ExtResource( 3 )
 
 [node name="Contraseña" type="TextEdit" parent="Objetos"]
@@ -59,6 +65,7 @@ margin_left = 412.0
 margin_top = 361.5
 margin_right = 644.0
 margin_bottom = 401.5
+theme = ExtResource( 7 )
 script = ExtResource( 4 )
 
 [node name="Volver" type="Button" parent="Objetos"]
@@ -66,6 +73,7 @@ margin_left = 412.0
 margin_top = 422.5
 margin_right = 528.0
 margin_bottom = 462.5
+theme = ExtResource( 7 )
 action_mode = 0
 text = "Hecho"
 script = ExtResource( 1 )
@@ -75,9 +83,19 @@ margin_left = 528.0
 margin_top = 422.5
 margin_right = 644.0
 margin_bottom = 462.5
+theme = ExtResource( 7 )
 action_mode = 0
 text = "Registrarme"
 script = ExtResource( 5 )
+
+[node name="Button" type="Button" parent="Objetos"]
+margin_left = 287.0
+margin_top = 500.0
+margin_right = 766.0
+margin_bottom = 550.0
+theme = ExtResource( 7 )
+text = "Atras"
+script = ExtResource( 9 )
 
 [node name="Curvas2" type="Sprite" parent="."]
 modulate = Color( 0.113725, 0.909804, 0, 1 )

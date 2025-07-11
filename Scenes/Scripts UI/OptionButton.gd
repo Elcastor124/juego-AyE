@@ -12,4 +12,5 @@ func _ready():
 
 
 func _on_OptionButton_item_selected(index):
-	Global.modo = index
+	Global.modo = option_button.get_item_id(index)
+	print(Global.modo)

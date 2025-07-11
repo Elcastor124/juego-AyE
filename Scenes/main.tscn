@@ -1,9 +1,20 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scenes/prueba.tscn" type="PackedScene" id=1]
 [ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=2]
+[ext_resource path="res://Scenes/Scripts UI/Button.gd" type="Script" id=3]
+[ext_resource path="res://VAmosadejarloFino.tres" type="Theme" id=4]
 
 [node name="main" type="Node2D"]
+
+[node name="password" type="LineEdit" parent="."]
+visible = false
+margin_left = 15.0
+margin_top = 500.0
+margin_right = 195.0
+margin_bottom = 551.0
+theme = ExtResource( 4 )
+placeholder_text = "Contraseña"
 
 [node name="Node2D" parent="." instance=ExtResource( 1 )]
 minorpercentageindex = 0.3
@@ -12,3 +23,14 @@ minorpercentageindex = 0.3
 show_behind_parent = true
 position = Vector2( 568, 343 )
 texture = ExtResource( 2 )
+
+[node name="Button" type="Button" parent="."]
+margin_left = 803.0
+margin_top = 546.0
+margin_right = 1014.0
+margin_bottom = 591.0
+theme = ExtResource( 4 )
+text = "Volver"
+script = ExtResource( 3 )
+
+[connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]

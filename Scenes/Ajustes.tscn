@@ -1,0 +1,85 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=1]
+[ext_resource path="res://Scenes/Scripts UI/Ajustes-Lbel.gd" type="Script" id=2]
+[ext_resource path="res://fuente.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Scenes/Scripts UI/Button.gd" type="Script" id=4]
+[ext_resource path="res://Themeusuario.tres" type="Theme" id=5]
+[ext_resource path="res://VAmosadejarloFino.tres" type="Theme" id=6]
+[ext_resource path="res://Scenes/Ajustes-Txt.gd" type="Script" id=7]
+[ext_resource path="res://IMAGES/hojas.png" type="Texture" id=8]
+[ext_resource path="res://Scenes/HSlider.gd" type="Script" id=9]
+
+[sub_resource type="Theme" id=1]
+default_font = ExtResource( 3 )
+
+[node name="Ajustes" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -9.0
+margin_right = -9.0
+rect_pivot_offset = Vector2( 241, 480 )
+
+[node name="Blanco" type="Sprite" parent="."]
+position = Vector2( 537, 300 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Hojas" type="Sprite" parent="Blanco"]
+position = Vector2( -407, -47 )
+scale = Vector2( 0.6, 0.601 )
+texture = ExtResource( 8 )
+
+[node name="Hojas2" type="Sprite" parent="Blanco"]
+position = Vector2( 376, -38 )
+scale = Vector2( 0.6, 0.601 )
+texture = ExtResource( 8 )
+flip_h = true
+
+[node name="HSlider" type="HSlider" parent="."]
+margin_left = 275.0
+margin_top = 240.0
+margin_right = 795.0
+margin_bottom = 270.0
+script = ExtResource( 9 )
+
+[node name="RichTextLabel" type="Label" parent="HSlider"]
+self_modulate = Color( 0, 0, 0, 1 )
+margin_top = -56.0
+margin_right = 520.0
+margin_bottom = -16.0
+focus_mode = 2
+theme = ExtResource( 5 )
+custom_colors/font_color_shadow = Color( 0.537255, 0.486275, 0.486275, 1 )
+text = "Margen de error"
+align = 1
+script = ExtResource( 2 )
+
+[node name="Button" type="Button" parent="."]
+margin_left = 275.0
+margin_top = 477.0
+margin_right = 795.0
+margin_bottom = 527.0
+theme = ExtResource( 6 )
+text = "Atras"
+script = ExtResource( 4 )
+
+[node name="Ajustes-Txt" type="RichTextLabel" parent="."]
+self_modulate = Color( 0, 0, 0, 1 )
+margin_left = 275.0
+margin_top = 1.0
+margin_right = 805.0
+margin_bottom = 125.0
+focus_mode = 2
+theme = SubResource( 1 )
+text = "Ajustes"
+fit_content_height = true
+scroll_active = false
+scroll_following = true
+selection_enabled = true
+script = ExtResource( 7 )
+
+[connection signal="value_changed" from="HSlider" to="HSlider" method="_on_HSlider_value_changed"]
+[connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]
