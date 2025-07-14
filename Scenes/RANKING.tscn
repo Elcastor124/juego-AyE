@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/Scripts UI/Ranking.gd" type="Script" id=1]
+[ext_resource path="res://IMAGES/blanco.jpg" type="Texture" id=2]
+[ext_resource path="res://Scenes/Scripts UI/Button.gd" type="Script" id=3]
+[ext_resource path="res://VAmosadejarloFino.tres" type="Theme" id=4]
+
+[node name="RANKING" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="Blanco" type="Sprite" parent="."]
+position = Vector2( 2207, -3686 )
+scale = Vector2( 6.57083, 7.68861 )
+texture = ExtResource( 2 )
+
+[node name="Blanco" type="Sprite" parent="Blanco"]
+position = Vector2( -263.741, 525.062 )
+texture = ExtResource( 2 )
+
+[node name="Button" type="Button" parent="."]
+margin_left = 803.0
+margin_top = 546.0
+margin_right = 1014.0
+margin_bottom = 591.0
+theme = ExtResource( 4 )
+text = "Volver"
+script = ExtResource( 3 )
+
+[connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]

@@ -29,14 +29,15 @@ margin_bottom = 5.0
 
 [node name="Blanco2" type="Sprite" parent="Objetos"]
 show_behind_parent = true
-position = Vector2( 568, 343 )
+position = Vector2( 568, 282.5 )
+scale = Vector2( 1, 1.2345 )
 texture = ExtResource( 2 )
 
 [node name="Blanco3" type="Sprite" parent="Objetos"]
 self_modulate = Color( 0.239216, 0.227451, 0.270588, 1 )
 show_behind_parent = true
-position = Vector2( 526, 231.5 )
-scale = Vector2( 0.25, 0.0453737 )
+position = Vector2( 522.5, 231.5 )
+scale = Vector2( 0.376033, 0.0453737 )
 texture = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="Objetos"]
@@ -116,3 +117,4 @@ texture = ExtResource( 6 )
 [connection signal="text_changed" from="Objetos/Contraseña" to="Objetos/Contraseña" method="_on_Contrasea_text_changed"]
 [connection signal="pressed" from="Objetos/Volver" to="Objetos/Volver" method="_on_Volver_pressed"]
 [connection signal="pressed" from="Objetos/registrarme" to="Objetos/registrarme" method="_on_registrarme_pressed"]
+[connection signal="pressed" from="Objetos/Button" to="Objetos/Button" method="_on_Button_pressed"]

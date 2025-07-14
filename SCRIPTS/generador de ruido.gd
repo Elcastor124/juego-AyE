@@ -114,8 +114,6 @@ func generar_hoja_con_ruido():
 		_:
 			selected_image_path = image_paths[randi() % image_paths.size()]
 	var image_filename = selected_image_path.get_file()
-	if Name_label:
-		Name_label.text = "Hoja: " + image_filename.get_basename()
 
 	img = Image.new()
 	if img.load(selected_image_path) != OK:
@@ -166,6 +164,7 @@ func generar_hoja_con_ruido():
 	add_child(sprite)
 	current_sprite = sprite
 	total_valid_pixels = valid_pixels.size()
+
 	
 	# Llamar al método que procesa la infección en pasos pequeños
 	yield(get_tree().create_timer(0.01), "timeout")
@@ -244,7 +243,7 @@ func crear_ui():
 
 	# Label de pregunta
 	var label = Label.new()
-	label.text = "¿Cuánto ruido hay en la imagen? (porcentaje)"
+	label.text = "¿Que porcentaje de infeccion tiene la hoja?"
 	label.rect_position = Vector2(-150, -270)
 	label.rect_min_size = Vector2(300, 30)
 	label.add_stylebox_override("normal", input_background)
@@ -257,7 +256,7 @@ func crear_ui():
 	# Input porcentaje
 	input = LineEdit.new()
 	input.name = "NoiseInput"
-	input.rect_position = Vector2(-75, 230)
+	input.rect_position = Vector2(-75, 246)
 	input.rect_min_size = Vector2(150, 30)
 	input.theme = my_theme
 	input.grab_click_focus()
@@ -266,7 +265,7 @@ func crear_ui():
 	# Botón enviar
 	var boton = Button.new()
 	boton.text = "Enviar"
-	boton.rect_position = Vector2(85, 230)
+	boton.rect_position = Vector2(85, 246)
 	boton.rect_min_size = Vector2(80, 30)
 	boton.connect("pressed", self, "_on_boton_pressed")
 	boton.theme = my_theme
@@ -355,21 +354,8 @@ func crear_ui():
 	add_child(save_button)
 	
 
-	#label Nombre hoja 
-	# Label nombre de hoja
-	Name_label = Label.new()
-	Name_label.name = "NameLabel"
-	Name_label.text = "Hoja: "
-	Name_label.rect_position = Vector2(-100, 200)  # Posición debajo del sprite
-	Name_label.rect_min_size = Vector2(300, 30)
-	Name_label.align = Label.ALIGN_CENTER
-	Name_label.valign = Label.VALIGN_CENTER
-	Name_label.add_color_override("font_color", Color(1, 1, 1))
-	Name_label.add_stylebox_override("normal", input_background)
-	Name_label.theme = my_theme
-	add_child(Name_label)
 	input.grab_focus()
-	mostrar_ranking()
+
 	
 
 
@@ -513,25 +499,25 @@ func _on_save_pressed():
 	if usuarios.has(nombre):
 		if contrasena == "":
 			password_input.visible = true
-			print("Introduce tu contraseña para guardar la puntuación.")
+			actualizar_print_label("Introduce tu contraseña para guardar la puntuación.")
 			return
 		elif usuarios[nombre] != contrasena:
-			print("Contraseña incorrecta.")
+			actualizar_print_label("Contraseña incorrecta.")
 			return
 	else:
 		# Usuario nuevo
 		if contrasena == "":
 			password_input.visible = true
-			print("Introduce una contraseña para registrar el usuario.")
+			actualizar_print_label("Introduce una contraseña para registrar el usuario y después pulse guardar puntuación otra vez")
 			return
 		else:
 			usuarios[nombre] = contrasena
 			file.open(usuarios_path, File.WRITE)
 			file.store_string(to_json(usuarios))
 			file.close()
-			print("Usuario registrado.")
+			actualizar_print_label("Usuario registrado.")
 
-	# Cargar puntuaciones existentes
+	# Cargar puntuaciones existentesW
 	if file.file_exists(scores_path):
 		file.open(scores_path, File.READ)
 		var contenido = file.get_as_text()
@@ -557,8 +543,6 @@ func _on_save_pressed():
 	contrasena = null
 	password_input.text = ""
 	password_input.grab_focus()
-
-	mostrar_ranking() # Esta función debe estar definida en tu script
 	input.grab_focus()
 
 
@@ -569,87 +553,3 @@ func _input(event):
 		if event.scancode == KEY_ENTER or event.scancode == KEY_KP_ENTER:
 			_on_boton_pressed()
 
-func mostrar_ranking():
-	var path = "res://scores.json"
-	var file = File.new()
-	var puntuaciones = {}
-
-	if file.file_exists(path):
-		file.open(path, File.READ)
-		var contenido = file.get_as_text()
-		file.close()
-		if contenido != "":
-			puntuaciones = parse_json(contenido)
-
-	var arr = []
-	for nombre in puntuaciones.keys():
-		arr.append({"nombre": nombre, "score": puntuaciones[nombre]})
-	
-	ordenar_ranking(arr)
-
-	# Panel contenedor
-	var ranking_panel = get_node_or_null("RankingPanel")
-	if ranking_panel == null:
-		ranking_panel = Panel.new()
-		ranking_panel.name = "RankingPanel"
-		ranking_panel.rect_position = Vector2(-470, -220)
-		ranking_panel.rect_min_size = Vector2(LABEL_WIDTH + 10, MAX_RANKING_HEIGHT)
-		ranking_panel.add_stylebox_override("panel", input_background)
-		add_child(ranking_panel)
-	else:
-		for child in ranking_panel.get_children():
-			child.queue_free()
-
-	# Título
-	var title_label = Label.new()
-	title_label.text = "Ranking"
-	title_label.align = Label.ALIGN_CENTER
-	title_label.add_color_override("font_color", Color(1, 1, 1))
-	title_label.rect_min_size = Vector2(LABEL_WIDTH, 30)
-	title_label.theme = my_theme
-	ranking_panel.add_child(title_label)
-
-	# ScrollContainer
-	var scroll = ScrollContainer.new()
-	scroll.rect_min_size = Vector2(LABEL_WIDTH + 10, MAX_RANKING_HEIGHT - 40)
-	scroll.margin_top = 40
-	scroll.scroll_vertical_enabled = false  # Desactivamos scroll: corte manual
-	ranking_panel.add_child(scroll)
-
-	# VBox para etiquetas
-	var container = VBoxContainer.new()
-	container.name = "RankingContainer"
-	container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	scroll.add_child(container)
-
-	# Mostrar hasta que se alcance la altura máxima
-	var used_height := 0
-	for entry in arr:
-		var label = Label.new()
-		label.text = "%s : %d" % [entry["nombre"], entry["score"]]
-		label.add_color_override("font_color", Color(1, 1, 1))
-		label.autowrap = true
-		label.rect_min_size = Vector2(LABEL_WIDTH, 0)
-		label.theme = my_theme
-		container.add_child(label)
-		
-		# Estimar altura (antes del render)
-		label.force_update_transform()
-		var est_height = label.get_combined_minimum_size().y + LABEL_MARGIN
-		used_height += est_height
-
-		# Si se pasa, eliminar y salir
-		if used_height > MAX_RANKING_HEIGHT - 40:
-			container.remove_child(label)
-			label.queue_free()
-			break
-func ordenar_ranking(arr):
-	for i in range(arr.size()):
-		for j in range(i + 1, arr.size()):
-			if arr[j]["score"] > arr[i]["score"]:
-				var temp = arr[i]
-				arr[i] = arr[j]
-				arr[j] = temp
-
-func _sort_scores_desc(a, b):
-	return b.score - a.score

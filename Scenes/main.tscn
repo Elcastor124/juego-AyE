@@ -10,27 +10,28 @@
 [node name="password" type="LineEdit" parent="."]
 visible = false
 margin_left = 15.0
-margin_top = 500.0
+margin_top = 546.0
 margin_right = 195.0
-margin_bottom = 551.0
+margin_bottom = 591.0
 theme = ExtResource( 4 )
 placeholder_text = "Contraseña"
 
 [node name="Node2D" parent="." instance=ExtResource( 1 )]
 minorpercentageindex = 0.3
 
-[node name="Blanco2" type="Sprite" parent="."]
-show_behind_parent = true
-position = Vector2( 568, 343 )
-texture = ExtResource( 2 )
-
-[node name="Button" type="Button" parent="."]
-margin_left = 803.0
-margin_top = 546.0
-margin_right = 1014.0
-margin_bottom = 591.0
+[node name="Button" type="Button" parent="Node2D"]
+margin_left = 303.0
+margin_top = 246.0
+margin_right = 514.0
+margin_bottom = 291.0
 theme = ExtResource( 4 )
 text = "Volver"
 script = ExtResource( 3 )
 
-[connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]
+[node name="Blanco2" type="Sprite" parent="."]
+show_behind_parent = true
+position = Vector2( 568, 287.5 )
+scale = Vector2( 1, 1.21512 )
+texture = ExtResource( 2 )
+
+[connection signal="pressed" from="Node2D/Button" to="Node2D/Button" method="_on_Button_pressed"]

@@ -23,10 +23,15 @@ boot_splash/minimum_display_time=2
 
 Global="*res://Scenes/Scripts UI/global.gd"
 
+[display]
+
+window/size/resizable=false
+
 [global]
 
 fondo=false
 Windows=false
+pantalla=false
 
 [gui]
 
